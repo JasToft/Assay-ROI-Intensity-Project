@@ -6,36 +6,34 @@ import matplotlib.pyplot as plt
 
 def extract_signal(video_path, roi=None):
     cap = cv2.VideoCapture(video_path)
-
-    ret, frame = cap.read()
-    if not ret:
-        raise ValueError(f"Could not read video: {video_path}")
-
-    # Select ROI only if not provided
-    if roi is None:
-        roi = cv2.selectROI("Select ROI", frame)
-        cv2.destroyAllWindows()
-
-    x, y, w, h = roi
-    signal = []
-
-    cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
-
-    while True:
+    try:
         ret, frame = cap.read()
         if not ret:
-            break
+            raise ValueError(f"Could not read video: {video_path}")
 
-        roi_frame = frame[y:y+h, x:x+w]
-        gray = cv2.cvtColor(roi_frame, cv2.COLOR_BGR2GRAY)
+        # Select ROI only if not provided
+        if roi is None:
+            roi = cv2.selectROI("Select ROI", frame)
+            cv2.destroyAllWindows()
 
-        signal.append(255 - np.mean(gray))
+        x, y, w, h = roi
+        signal = []
 
-    cap.release()
+        cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
 
-    return np.array(signal), roi
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                break
 
+            roi_frame = frame[y:y+h, x:x+w]
+            gray = cv2.cvtColor(roi_frame, cv2.COLOR_BGR2GRAY)
 
+            signal.append(255 - np.mean(gray))
+
+        return np.array(signal), roi
+    finally:
+        cap.release()
 if __name__ == "__main__":
     video_files = [
         "pos1.mp4",
