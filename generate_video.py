@@ -22,8 +22,11 @@ def generate_synthetic_video(filename, speed):
         intensity = int(255 * (1 - (i * speed) / (frames - 1)))
         intensity = max(intensity, 0)
 
-        # Draw test strip rectangle
+        # Draw filled test strip (changes over time)
         cv2.rectangle(frame, (150, 80), (250, 120), intensity, -1)
+
+        # ✅ ALWAYS draw black outline (constant visibility)
+        cv2.rectangle(frame, (150, 80), (250, 120), 0, 2)
 
         # Add noise
         noise = np.random.normal(0, 5, frame.shape).astype(np.int16)
