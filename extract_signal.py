@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import pandas as pd
 
 cap = cv2.VideoCapture("synthetic_assay.mp4")
 
@@ -28,3 +29,11 @@ while True:
     signal.append(np.mean(gray))
 
 cap.release()
+
+signal = np.array(signal)
+
+# Normalize signal
+signal_norm = (signal - np.min(signal)) / (np.max(signal) - np.min(signal))
+
+# Smooth signal with moving average
+signal_smooth = pd.Series(signal_norm).rolling(5).mean()
