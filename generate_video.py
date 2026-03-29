@@ -8,7 +8,7 @@ frames = 120
 codec = 'mp4v'
 
 out = cv2.VideoWriter("synthetic_assay.mp4",
-                       cv2.VideoWriter_fourcc(*codec),
+                       cv2.VideoWriter_fourcc(*'mp4v'),
                        fps,
 def main() -> None:
     out =  cv2.VideoWriter("synthetic_assay.mp4",
