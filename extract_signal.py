@@ -33,12 +33,7 @@ def extract_signal(video_path, roi=None):
 
     cap.release()
 
-    signal = np.array(signal)
-
-    # Normalize
-    signal_norm = (signal - np.min(signal)) / (np.max(signal) - np.min(signal))
-
-    return signal, signal_norm, roi
+    return np.array(signal), roi
 
 
 if __name__ == "__main__":
@@ -49,13 +44,22 @@ if __name__ == "__main__":
         "neg2.mp4"
     ]
 
-    all_signals = []
+    all_raw = []
     roi = None
 
+    # --- Pass 1: collect all raw signals ---
     for video in video_files:
         print(f"Processing {video}...")
+        raw, roi = extract_signal(video, roi)
+        all_raw.append((video, raw))
 
-        raw, norm, roi = extract_signal(video, roi)
+    # --- Global normalization ---
+    global_min = min(raw.min() for _, raw in all_raw)
+    global_max = max(raw.max() for _, raw in all_raw)
+
+    all_signals = []
+    for video, raw in all_raw:
+        norm = (raw - global_min) / (global_max - global_min)
         smooth = pd.Series(norm).rolling(5).mean().fillna(0)
 
         all_signals.append((video, norm, smooth))
@@ -67,20 +71,9 @@ if __name__ == "__main__":
             "normalized": norm,
             "smoothed": smooth
         })
-
         df.to_csv(f"{video}_signal.csv", index=False)
 
-    colors = {
-    "pos": "green",
-    "neg": "red"
-}
-
-    for video, norm, smooth in all_signals:
-        color = "green" if "pos" in video else "red"
-        plt.plot(norm, color=color, alpha=0.5)
-
-
-    # Plot all signals together
+    # --- Plot all signals together ---
     plt.figure(figsize=(10, 5))
 
     for video, norm, smooth in all_signals:
