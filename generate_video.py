@@ -6,7 +6,7 @@ width, height = 400, 200
 fps = 10
 frames = 120
 
-out =  cv2.VideoWriter("synthetic_assay.mp4",
+out = cv2.VideoWriter("synthetic_assay.mp4",
                        cv2.VideoWriter_fourcc(*'mp4v'),
                        fps,
                        (width, height))
