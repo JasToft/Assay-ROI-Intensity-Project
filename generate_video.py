@@ -13,19 +13,20 @@ out =  cv2.VideoWriter("synthetic_assay.mp4",
 
 for i in range(frames):
     # White background
-    frame = np.ones((height, width, 3), dtype=np.uint8) * 255
+    frame = np.ones((height, width), dtype=np.uint8) * 255
     
     # Simulate gradual darkening
-    intensity = int(255 - int(i / 1.5)) # Darken over time
-    intensity = max(intensity, 50) # Limit minimum intensity
+    intensity = int(255 * (1 - i / (frames - 1))) # Darken from white to black
+    intensity = max(intensity, 0) # Limit minimum intensity
 
     # Draw test strip rectangle
     cv2.rectangle(frame, (150, 80), (250, 120),
-                   (intensity, intensity, intensity), -1)
+                   intensity, -1)
 
     # Add some noise
-    noise = np.random.normal(0, 5, frame.shape).astype(np.uint8)
-    frame = cv2.add(frame, noise)
+    noise = np.random.normal(0, 5, frame.shape).astype(np.int16)
+    frame = np.clip(frame.astype(np.int16) + noise, 0, 255).astype(np.uint8)
+    frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
 
     out.write(frame)
 
