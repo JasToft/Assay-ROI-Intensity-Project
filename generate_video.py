@@ -5,11 +5,14 @@ import numpy as np
 width, height = 400, 200
 fps = 10
 frames = 120
+codec = 'mp4v'
 
 out =  cv2.VideoWriter("synthetic_assay.mp4",
-                       cv2.VideoWriter_fourcc(*'mp4v'),
+                       cv2.VideoWriter_fourcc(*codec),
                        fps,
                        (width, height))
+if not out.isOpened():
+    raise RuntimeError(f"Failed to open video writer for 'synthetic_assay.mp4' with codec '{codec}'.")
 
 for i in range(frames):
     # White background
