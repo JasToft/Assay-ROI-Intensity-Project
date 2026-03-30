@@ -25,7 +25,7 @@ def generate_synthetic_video(filename, speed):
         # Draw filled test strip (changes over time)
         cv2.rectangle(frame, (150, 80), (250, 120), intensity, -1)
 
-        # ✅ ALWAYS draw black outline (constant visibility)
+        # Always draw black outline
         cv2.rectangle(frame, (150, 80), (250, 120), 0, 2)
 
         # Add noise

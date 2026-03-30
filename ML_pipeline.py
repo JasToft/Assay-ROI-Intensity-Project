@@ -1,6 +1,8 @@
 import numpy as np
 from extract_signal import extract_signal
 from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import LeaveOneOut, cross_val_predict
 from sklearn.metrics import classification_report
 
@@ -61,7 +63,11 @@ if __name__ == "__main__":
     # Train and evaluate with leave-one-out CV
     print("Training model (leave-one-out CV)...\n")
 
-    model = LogisticRegression()
+    model = Pipeline([
+        ("scaler", StandardScaler()),
+        ("clf",    LogisticRegression())
+    ])
+
     preds = cross_val_predict(model, X, y, cv=LeaveOneOut())
 
     print("Predictions:", preds)
