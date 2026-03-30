@@ -30,7 +30,7 @@ You will be prompted to draw a region of interest (ROI) on the first frame. The 
 
 **3. Train the classifier**
 ```bash
-python train_classifier.py
+python ML_pipeline.py
 ```
 Prints per-sample predictions and a classification report.
 
